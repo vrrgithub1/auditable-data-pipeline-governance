@@ -20,6 +20,54 @@ This pipeline implements the following controls:
 - **Evidently AI:** Monitors continuous dataset drift.
 - **Audit Trails:** Generates documentation necessary for NIST AI RMF and EU AI Act compliance.
 
+## Architecture Diagram
+```mermaid
+flowchart LR
+    %% =========================
+    %% SOURCE & INGESTION
+    %% =========================
+    A[Source Systems<br/>Databases • APIs • Streams • Files] --> B[Ingestion & Orchestration<br/>ETL/ELT • Schedulers • Connectors]
+
+    %% =========================
+    %% MEDALLION LAYERS
+    %% =========================
+    B --> C[Bronze Layer<br/>Raw • Untrusted • Immutable]
+
+    C -->|Validation Pass| D[Silver Layer<br/>Cleaned • Governed • Validated]
+    C -->|Validation Fail| E[Quarantine Layer<br/>Failed Records • Error Context]
+
+    E -->|Remediation / Reprocess| C
+
+    %% =========================
+    %% GOVERNANCE FRAMEWORKS
+    %% =========================
+    subgraph Governance & Monitoring
+        GE[Great Expectations<br/>Schema Contracts • Rules]:::ge
+        EV[Evidently AI<br/>Drift Monitoring]:::ev
+        AT[Audit Trails<br/>Lineage • Logs • Compliance]:::at
+    end
+
+    GE --> C
+    GE --> D
+    EV --> C
+    EV --> D
+    AT --> C
+    AT --> D
+    AT --> E
+
+    %% =========================
+    %% DOWNSTREAM
+    %% =========================
+    D --> F[Downstream Consumers<br/>BI • ML • Analytics • Data Products]
+
+    %% =========================
+    %% STYLES
+    %% =========================
+    classDef ge fill:#fdf2d0,stroke:#d4a72c,stroke-width:1px;
+    classDef ev fill:#d0e8ff,stroke:#1f6feb,stroke-width:1px;
+    classDef at fill:#e8d0ff,stroke:#8250df,stroke-width:1px;
+```
+
 ## Project Structure
 
 ```
