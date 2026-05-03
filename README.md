@@ -4,7 +4,7 @@ An end-to-end data engineering and model governance pipeline built to ensure reg
 
 ## 📖 Medium Article
 Read the architectural breakdown and the governance design on Medium:
-- **[Building an Auditable Data Pipeline: Implementing NIST RMF and EU AI Act Controls for Responsible AI](your-medium-link-here)**
+- **[Building an Auditable Data Pipeline: Implementing NIST RMF and EU AI Act Controls for Responsible AI](https://medium.com/@vrrajadurai/building-an-auditable-data-pipeline-implementing-nist-rmf-and-eu-ai-act-controls-for-responsible-0dc031f62a9e)**
 
 
 ## 🏛️ Architecture Overview
