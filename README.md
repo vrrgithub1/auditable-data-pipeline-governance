@@ -113,31 +113,6 @@ This section clearly outlines the testing and monitoring tools used in the pipel
   - `age`
 - When drift is detected, the report highlights deviations from the expected reference distribution.
 
-# Auditable Data Pipeline & Governance
-
-An end-to-end data engineering and model governance pipeline built to ensure regulatory compliance, data quality, and drift detection. This system processes credit risk data, isolates anomalous transactions, and monitors data distribution over time.
-
-## 📖 Medium Article
-Read the architectural breakdown and the governance design on Medium:
-- **[Building an Auditable Data Pipeline: Implementing NIST RMF and EU AI Act Controls for Responsible AI](your-medium-link-here)**
-
----
-
-## 🏛️ Architecture Overview
-The pipeline processes data through three distinct layers to maintain auditability and data integrity:
-
-1. **Bronze Layer:** Ingestion of raw, untrusted data.
-2. **Silver Layer:** Cleaned, governed, and validated data ready for consumption.
-3. **Quarantine Layer:** Isolated records that fail governance rules.
-
-## 🛡️ Governance Frameworks
-This pipeline implements the following controls:
-- **Great Expectations:** Enforces schema contracts and bounds rules.
-- **Evidently AI:** Monitors continuous dataset drift.
-- **Audit Trails:** Generates documentation necessary for NIST AI RMF and EU AI Act compliance.
-
----
-
 ## 🚀 Getting Started
 
 ### Prerequisites
