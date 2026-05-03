@@ -2,14 +2,23 @@
 
 An end-to-end data engineering and model governance pipeline built to ensure regulatory compliance, data quality, and drift detection. This system processes credit risk data, isolates anomalous transactions, and monitors data distribution over time.
 
-## Overview
+## 📖 Medium Article
+Read the architectural breakdown and the governance design on Medium:
+- **[Building an Auditable Data Pipeline: Implementing NIST RMF and EU AI Act Controls for Responsible AI](your-medium-link-here)**
 
-This project implements an auditable data pipeline governance system with the following capabilities:
 
-- **Data Validation**: Enforce data quality rules using Great Expectations
-- **Data Drift Detection**: Monitor for data distribution changes using Evidently AI
-- **Medallion Architecture**: Organize data into Bronze (raw), Silver (validated), and Quarantine (failed) layers
-- **Governance Gatekeeping**: Automated validation and quarantine of invalid records
+## 🏛️ Architecture Overview
+The pipeline processes data through three distinct layers to maintain auditability and data integrity:
+
+1. **Bronze Layer:** Ingestion of raw, untrusted data.
+2. **Silver Layer:** Cleaned, governed, and validated data ready for consumption.
+3. **Quarantine Layer:** Isolated records that fail governance rules.
+
+## 🛡️ Governance Frameworks
+This pipeline implements the following controls:
+- **Great Expectations:** Enforces schema contracts and bounds rules.
+- **Evidently AI:** Monitors continuous dataset drift.
+- **Audit Trails:** Generates documentation necessary for NIST AI RMF and EU AI Act compliance.
 
 ## Project Structure
 
@@ -103,6 +112,62 @@ This section clearly outlines the testing and monitoring tools used in the pipel
   - `credit_amount`
   - `age`
 - When drift is detected, the report highlights deviations from the expected reference distribution.
+
+# Auditable Data Pipeline & Governance
+
+An end-to-end data engineering and model governance pipeline built to ensure regulatory compliance, data quality, and drift detection. This system processes credit risk data, isolates anomalous transactions, and monitors data distribution over time.
+
+## 📖 Medium Article
+Read the architectural breakdown and the governance design on Medium:
+- **[Building an Auditable Data Pipeline: Implementing NIST RMF and EU AI Act Controls for Responsible AI](your-medium-link-here)**
+
+---
+
+## 🏛️ Architecture Overview
+The pipeline processes data through three distinct layers to maintain auditability and data integrity:
+
+1. **Bronze Layer:** Ingestion of raw, untrusted data.
+2. **Silver Layer:** Cleaned, governed, and validated data ready for consumption.
+3. **Quarantine Layer:** Isolated records that fail governance rules.
+
+## 🛡️ Governance Frameworks
+This pipeline implements the following controls:
+- **Great Expectations:** Enforces schema contracts and bounds rules.
+- **Evidently AI:** Monitors continuous dataset drift.
+- **Audit Trails:** Generates documentation necessary for NIST AI RMF and EU AI Act compliance.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.9+
+- Conda or virtual environment manager
+- `git`
+
+### Installation
+```bash
+git clone [https://github.com/vrrgithub1/auditable-data-pipeline-governance.git](https://github.com/vrrgithub1/auditable-data-pipeline-governance.git)
+cd auditable-data-pipeline-governance
+pip install -r requirements.txt
+```
+#### Execution
+- 1. Initialize data context:
+
+```Bash
+python initialize_gx.py
+```
+- 2. Run data generator and validation:
+
+```Bash
+python data_generator.py
+```
+
+- 3. Run the drift detection report:
+
+```Bash
+python evidently_ai.py
+```
 
 ## Setup & Execution Instructions
 
@@ -240,9 +305,8 @@ Improvements to the pipeline, such as:
 - Automating orchestration with tools like *Prefect* or *Apache Airflow*.
 - Adding an automated model training stage that retrains on governed data only when drift is detected.
 
-## License
-
-MIT License
+## 📜 License
+This project is licensed under the MIT License.
 
 Copyright (c) 2026 Venkat Rajadurai
 
