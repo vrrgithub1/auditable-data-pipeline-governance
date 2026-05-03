@@ -1,6 +1,6 @@
-# Auditable Data Pipeline Governance
+# Auditable Data Pipeline & Governance
 
-An end-to-end auditable data pipeline designed for credit risk data, featuring data governance controls, model fairness, data quality checks, and drift monitoring.
+An end-to-end data engineering and model governance pipeline built to ensure regulatory compliance, data quality, and drift detection. This system processes credit risk data, isolates anomalous transactions, and monitors data distribution over time.
 
 ## Overview
 
@@ -36,37 +36,11 @@ auditable-data-pipeline-governance/
 
 ## Architecture & Pipeline Layers
 
-This project implements a production-grade multi-layer data storage architecture following the Medallion Architecture pattern:
+This project implements a production-grade multi-layer data storage **Medallion Architecture**:
 
-### Bronze Layer: Raw Data Ingestion
-
-- **Location**: `data/bronze/credit_data.csv`
-- **Purpose**: Landing zone for raw, unvalidated data directly from source systems
-- **Characteristics**: 
-  - Contains original data as ingested with minimal transformation
-  - May contain data quality issues (invalid values, missing fields)
-  - Serves as the source of truth for all downstream processing
-  - Preserves data lineage and auditability
-
-### Silver Layer: Cleaned & Governed Data
-
-- **Location**: `data/silver/credit_data_governed.csv`
-- **Purpose**: Validated, cleaned, and quality-checked data ready for consumption
-- **Characteristics**:
-  - Passed all governance rules and data quality checks
-  - Standardized schema and data types
-  - Enriched with governance metadata
-  - Ready for analytics, reporting, and model training
-
-### Quarantine Layer: Invalid Records
-
-- **Location**: `data/quarantine/failed_records.csv`
-- **Purpose**: Isolation of erroneous or invalid rows for manual inspection
-- **Characteristics**:
-  - Contains records that failed governance validation
-  - Preserved for data engineering review and remediation
-  - Includes failure reason and validation details
-  - Prevents invalid data from propagating downstream
+- **Bronze Layer:** Contains the raw, untrusted incoming datasets (data/bronze/).
+- **Silver Layer:** Contains the cleaned, governed, and quality-checked data that is safe for analysis (data/silver/).
+- **Quarantine Layer:** Stores rejected or anomalous records, supporting traceability and audit trails (data/quarantine/).
 
 ### Data Flow
 
@@ -76,7 +50,7 @@ Source System → Bronze Layer → Governance Gatekeeper → Silver Layer (Valid
                                     Quarantine Layer (Invalid)
 ```
 
-## Compliance Frameworks
+## Compliance & Governance Frameworks
 
 This project aligns with major regulatory and standards frameworks for AI and data governance:
 
@@ -100,35 +74,35 @@ This pipeline addresses EU AI Act requirements through:
   
 - **Fairness**: Data quality checks ensure consistent treatment of records, preventing bias from incomplete or erroneous data from entering downstream models.
 
-## Validation Steps
+### Mapping to Governance Frameworks
 
-This section documents the key validation and monitoring steps implemented in the pipeline:
+The following table maps the project’s reporting tooling to both the NIST AI RMF functions and the EU AI Act requirements:
 
-### Great Expectations Suite
+| Report Type | NIST AI RMF Function | EU AI Act Requirement |
+|-------------|----------------------|-----------------------|
+| Great Expectations | Measure: Programmatic validation of data quality and integrity. | Data Governance: Ensuring high-quality datasets through rigorous validation and error handling. |
+| Evidently AI | Monitor: Ongoing oversight of model input stability and performance. | Transparency & Traceability: Maintaining a clear audit trail of how data evolved throughout the system lifecycle. |
 
-The `credit_governance_suite` is a comprehensive validation suite that enforces business rules on credit risk data:
+## Technical Specifications & Validations
 
-- **credit_amount Validation**: Ensures loan amounts are constrained to acceptable business limits (must be positive values greater than 0)
-- **duration_months Validation**: Ensures loan duration is within acceptable business limits (must be between 1 and 72 months)
-- **Column-level Expectations**: Validates presence and type of all required columns
-- **Statistical Checks**: Monitors distribution of values to detect anomalies
+This section clearly outlines the testing and monitoring tools used in the pipeline:
 
-Each validation run produces detailed pass/fail statistics, error rates, and actionable failure messages for data engineers.
+### Great Expectations
 
-### Data Drift Analysis
+- The `credit_governance_suite` automatically enforces constraints on core features.
+- It ensures `credit_amount` values remain positive and bounded, and `duration_months` values stay within allowed business limits.
+- This suite enforces those constraints as part of the governance validation step.
 
-Evidently AI is used to continuously monitor for data distribution changes by comparing:
+### Evidently AI
 
-- **Reference Dataset**: The baseline training data (`data/silver/reference_data.csv`) representing expected data distributions
-- **Current Dataset**: Incoming batches from the Bronze layer for validation
-
-The drift analysis monitors the following 4 core features:
-- `checking_status`: Distribution of checking account status
-- `duration_months`: Distribution of loan duration values
-- `credit_amount`: Distribution of credit/loan amounts
-- `age`: Distribution of applicant ages
-
-When drift exceeds configured thresholds, the system generates an HTML report (`data/silver/data_drift_report.html`) visualizing the distribution changes, enabling proactive model retraining and data quality intervention.
+- Evidently AI generates a drift detection report that summarizes shifts in the data population.
+- The report compares current governed data against the reference dataset to identify changes on key features.
+- It tracks population shifts for:
+  - `checking_status`
+  - `duration_months`
+  - `credit_amount`
+  - `age`
+- When drift is detected, the report highlights deviations from the expected reference distribution.
 
 ## Setup & Execution Instructions
 
@@ -185,31 +159,40 @@ Orchestrates the entire governance workflow:
 3. Load and validate Bronze data
 4. Generate validation results
 
-## Usage
+## Setup and Execution
 
-### Step 1: Initialize the Environment
+### Prerequisites
 
-```bash
-python initialize_gx.py
-```
+- Python 3.9+
+- Conda or virtual environment manager
+- Clone the repository and navigate to the project directory.
 
-### Step 2: Generate Sample Data
+### Installation
 
-```bash
-python data_generator.py
-```
+1. Create and activate the environment:
+   ```bash
+   conda create -n governance_pipeline python=3.10 -y
+   conda activate governance_pipeline
+   ```
+2. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Step 3: Run Governance Validation
+### Pipeline Execution
 
-```bash
-python app.py
-```
-
-### Step 4: Check for Data Drift
-
-```bash
-python evidently_ai.py
-```
+1. Initialize Data Context:
+   ```bash
+   python initialize_gx.py
+   ```
+2. Generate and Govern Data:
+   ```bash
+   python data_generator.py
+   ```
+3. Run Monitoring Suite:
+   ```bash
+   python evidently_ai.py
+   ```
 
 ## Governance Rules
 
@@ -234,6 +217,49 @@ Bronze (Raw) → Governance Gatekeeper → Silver (Governed)
 - **Drift Report**: HTML report showing data distribution changes
 - **Audit Trail**: Complete history of data quality checks
 
+## Visual Outputs
+
+The project includes major visual artifacts that document the governance and monitoring results:
+
+### Evidently AI Data Drift Report
+
+![Evidently AI Data Drift Report](Images/Evidently-AI-Data-Drift-Report.png)
+
+This report visually summarizes population shifts against the reference dataset and highlights drift on key features.
+
+### Great Expectations Suite Dashboard
+
+![Great Expectations Suite Dashboard](Images/Great-Expectations-Suite-Dashboard.png)
+
+This dashboard displays the validation suite status and governance checks for the credit dataset.
+
+## Future Extensions
+
+Improvements to the pipeline, such as:
+
+- Automating orchestration with tools like *Prefect* or *Apache Airflow*.
+- Adding an automated model training stage that retrains on governed data only when drift is detected.
+
 ## License
 
 MIT License
+
+Copyright (c) 2026 Venkat Rajadurai
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

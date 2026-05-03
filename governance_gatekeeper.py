@@ -2,6 +2,9 @@ import pandas as pd
 import great_expectations as gx
 import os
 
+# Author: Venkat Rajadurai
+# Purpose: Governance gatekeeper for credit application data.
+
 # 1. Setup Context
 context = gx.get_context()
 

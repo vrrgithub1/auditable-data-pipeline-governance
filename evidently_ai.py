@@ -4,6 +4,9 @@ import warnings
 from evidently import Report
 from evidently.presets import DataDriftPreset
 
+# Author: Venkat Rajadurai
+# Purpose: Generate an Evidently data drift report comparing governed credit data against the reference dataset.
+
 # Suppress SciPy warnings about division by zero for small reference datasets
 warnings.filterwarnings('ignore', category=RuntimeWarning)
 
